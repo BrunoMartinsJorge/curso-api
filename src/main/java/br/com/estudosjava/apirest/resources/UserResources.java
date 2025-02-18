@@ -7,11 +7,10 @@ import br.com.estudosjava.apirest.services.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,6 +24,9 @@ public class UserResources {
     @Autowired
     private ModelMapper mapper;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @GetMapping(value ="/{id}")
     public ResponseEntity<UserDTO> findById(@PathVariable Integer id){
         return ResponseEntity.ok().body(mapper.map(userService.findById(id), UserDTO.class)) ;
@@ -34,5 +36,11 @@ public class UserResources {
     public ResponseEntity<List<UserDTO>> findAll(){
         List<User> users = userService.findAll();
         return ResponseEntity.ok().body(users.stream().map(x -> mapper.map(x, UserDTO.class)).collect(Collectors.toList()));
+    }
+
+    @PostMapping
+    public ResponseEntity<UserDTO> save(@RequestBody UserDTO user){
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(userService.create(user).getId()).toUri();
+        return ResponseEntity.created(uri).build();
     }
 }
