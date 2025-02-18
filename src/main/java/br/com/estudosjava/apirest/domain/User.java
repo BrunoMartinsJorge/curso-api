@@ -1,7 +1,9 @@
 package br.com.estudosjava.apirest.domain;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 // @Getter // Cria todos os Getters;
 // @Setter // Cria todos os Setters;
