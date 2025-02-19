@@ -27,20 +27,26 @@ public class UserResources {
     @Autowired
     private UserRepository userRepository;
 
-    @GetMapping(value ="/{id}")
-    public ResponseEntity<UserDTO> findById(@PathVariable Integer id){
-        return ResponseEntity.ok().body(mapper.map(userService.findById(id), UserDTO.class)) ;
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<UserDTO> findById(@PathVariable Integer id) {
+        return ResponseEntity.ok().body(mapper.map(userService.findById(id), UserDTO.class));
     }
 
     @GetMapping
-    public ResponseEntity<List<UserDTO>> findAll(){
+    public ResponseEntity<List<UserDTO>> findAll() {
         List<User> users = userService.findAll();
         return ResponseEntity.ok().body(users.stream().map(x -> mapper.map(x, UserDTO.class)).collect(Collectors.toList()));
     }
 
     @PostMapping
-    public ResponseEntity<UserDTO> save(@RequestBody UserDTO user){
+    public ResponseEntity<UserDTO> save(@RequestBody UserDTO user) {
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(userService.create(user).getId()).toUri();
         return ResponseEntity.created(uri).build();
+    }
+
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<UserDTO> update(@PathVariable Integer id, @RequestBody UserDTO user) {
+        user.setId(id);
+        return ResponseEntity.ok().body(mapper.map(userService.update(user), UserDTO.class));
     }
 }
