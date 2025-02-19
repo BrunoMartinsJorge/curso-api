@@ -3,7 +3,6 @@ package br.com.estudosjava.apirest.services.Impl;
 import br.com.estudosjava.apirest.domain.User;
 import br.com.estudosjava.apirest.domain.dto.UserDTO;
 import br.com.estudosjava.apirest.repositories.UserRepository;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -13,9 +12,13 @@ import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.context.SpringBootTest;
 
+
 import java.util.Optional;
 
+import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 class UserServiceImplTest {
@@ -45,20 +48,24 @@ class UserServiceImplTest {
     @Test
     void quandoBuscarPorIdRetorneUmaInstanciaDeUser() {
         // Quando o findById for chamado e passado-se um número inteiro, deve-se retornar um optional de User.
-        Mockito.when(repository.findById(Mockito.anyInt())).thenReturn(userOptional);
+        when(repository.findById(anyInt())).thenReturn(userOptional);
 
         User response = service.findById(ID);
 
         // Aqui está sendo verificado se o valor sejá nulo.
-        Assertions.assertNotNull(response);
+        assertNotNull(response);
 
         // Depois de verificar se o objeto não é nulo, assim então é liberado para validar as demais validações.
 
         // Aqui está sendo realizada uma verificação para que sempre seja retornado um User.
-        Assertions.assertEquals(User.class, response.getClass());
+        assertEquals(User.class, response.getClass());
 
         // Aqui está sendo realizada uma verificação para que sempre seja um Id.
-        Assertions.assertEquals(ID, response.getId());
+        assertEquals(ID, response.getId());
+        // Aqui está sendo realizada uma verificação para que sempre seja um Nome.
+        assertEquals(NOME, response.getNome());
+        // Aqui está sendo realizada uma verificação para que sempre seja um Email.
+        assertEquals(EMAIL, response.getEmail());
     }
 
     @Test
