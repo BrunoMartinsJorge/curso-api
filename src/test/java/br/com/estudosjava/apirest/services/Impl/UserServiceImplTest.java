@@ -3,6 +3,7 @@ package br.com.estudosjava.apirest.services.Impl;
 import br.com.estudosjava.apirest.domain.User;
 import br.com.estudosjava.apirest.domain.dto.UserDTO;
 import br.com.estudosjava.apirest.repositories.UserRepository;
+import br.com.estudosjava.apirest.services.exceptions.ObjectNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -27,6 +28,7 @@ class UserServiceImplTest {
     public static final String NOME = "Teste";
     public static final String EMAIL = "Teste@gmail.com";
     public static final String SENHA = "12345678";
+    public static final String OBJETO_NAO_ENCONTRADO = "Objeto não encontrado!";
     @InjectMocks
     private UserServiceImpl service;
 
@@ -66,6 +68,18 @@ class UserServiceImplTest {
         assertEquals(NOME, response.getNome());
         // Aqui está sendo realizada uma verificação para que sempre seja um Email.
         assertEquals(EMAIL, response.getEmail());
+    }
+
+    @Test
+    void quandoBuscarPorIdRetorneUmaExceptionObjetoNaoEncontrado(){
+        when(repository.findById(anyInt())).thenThrow(new ObjectNotFoundException(OBJETO_NAO_ENCONTRADO));
+
+        try{
+            service.findById(ID);
+        }catch (Exception ex){
+            assertEquals(ObjectNotFoundException.class, ex.getClass());
+            assertEquals(OBJETO_NAO_ENCONTRADO, ex.getMessage());
+        }
     }
 
     @Test
