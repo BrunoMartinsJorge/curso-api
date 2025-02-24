@@ -14,6 +14,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.context.SpringBootTest;
 
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
@@ -29,6 +30,7 @@ class UserServiceImplTest {
     public static final String EMAIL = "Teste@gmail.com";
     public static final String SENHA = "12345678";
     public static final String OBJETO_NAO_ENCONTRADO = "Objeto não encontrado!";
+    public static final int INDEX = 0;
     @InjectMocks
     private UserServiceImpl service;
 
@@ -83,7 +85,18 @@ class UserServiceImplTest {
     }
 
     @Test
-    void findAll() {
+    void quandoBuscarTodosRetorneUmaListaDeUsuarios () {
+        when(repository.findAll()).thenReturn(List.of(user));
+        List<User> response = service.findAll();
+
+        assertNotNull(response);
+        assertEquals(1, response.size());
+        assertEquals(User.class, response.get(INDEX).getClass());
+
+        assertEquals(ID, response.get(INDEX).getId());
+        assertEquals(NOME, response.get(INDEX).getNome());
+        assertEquals(EMAIL, response.get(INDEX).getEmail());
+        assertEquals(SENHA, response.get(INDEX).getSenha());
     }
 
     @Test
