@@ -32,7 +32,7 @@ class UserResourcesTest {
     public static final String EMAIL = "Teste@gmail.com";
     public static final String SENHA = "12345678";
     public static final int INDEX = 0;
-    private User user;
+    private User user = new User();
     private UserDTO userDTO;
 
     @InjectMocks
