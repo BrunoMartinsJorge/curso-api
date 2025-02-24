@@ -21,7 +21,7 @@ import java.util.Optional;
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 class UserServiceImplTest {
@@ -153,6 +153,15 @@ class UserServiceImplTest {
             assertEquals(DataIntegratyViolationException.class, e.getClass());
             assertEquals(E_MAIL_JA_ESTA_CADASTRADO_EM_NOSSO_SISTEMA, e.getMessage());
         }
+    }
+
+    @Test
+    void deleteComSucesso(){
+        when(repository.findById(anyInt())).thenReturn(userOptional);
+
+        doNothing().when(repository).deleteById(anyInt());
+        service.delete(ID);
+        verify(repository, times(2)).deleteById(anyInt());
     }
 
     private void startUser() {
