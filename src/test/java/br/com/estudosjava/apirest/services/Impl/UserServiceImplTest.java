@@ -3,6 +3,7 @@ package br.com.estudosjava.apirest.services.Impl;
 import br.com.estudosjava.apirest.domain.User;
 import br.com.estudosjava.apirest.domain.dto.UserDTO;
 import br.com.estudosjava.apirest.repositories.UserRepository;
+import br.com.estudosjava.apirest.services.exceptions.DataIntegratyViolationException;
 import br.com.estudosjava.apirest.services.exceptions.ObjectNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,8 +20,7 @@ import java.util.Optional;
 
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -112,6 +112,19 @@ class UserServiceImplTest {
         assertEquals(NOME, response.getNome());
         assertEquals(EMAIL, response.getEmail());
         assertEquals(SENHA, response.getSenha());
+    }
+
+    @Test
+    void quandoCriarRetorneUmaExecaoDeIntegridadeDeDados() {
+        when(repository.findByEmail(anyString())).thenReturn(userOptional);
+
+        try{
+            userOptional.get().setId(2);
+            service.create(userDTO);
+        }catch (Exception e){
+            assertEquals(DataIntegratyViolationException.class, e.getClass());
+            assertEquals("E-mail já está cadastrado em nosso sistema!", e.getMessage());
+        }
     }
 
     @Test
